@@ -1,13 +1,45 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { TimeRangeFilter } from "@/components/filters/TimeRangeFilter";
 import type { TimeRange } from "@/types/time";
 import { KpiGrid } from "@/components/kpi/KpiGrid";
 import { ReqChart } from "@/components/charts/ReqCharts";
 import { LogsTable } from "@/components/logs/LogsTable";
 import { AiInsightPanel } from "@/components/ai/AiInsightPanel";
+import { useReqMetrics } from "@/hooks/useReqMetrics";
 
 export const Dashboard = () => {
   const [range, setRange] = useState<TimeRange>("24h");
+  const { rows, isLd, err } = useReqMetrics(range);
+  type Trend = "up" | "down" | "flat";
+
+  const metrics = useMemo(() => {
+    if (!rows.length) {
+      return {
+        totalReq: 0,
+        avgReq: 0,
+        trend: "stable" as Trend,
+      };
+    }
+
+    let trend : Trend = "flat";
+
+    if(rows.length > 1){
+      const first = rows[0].reqCnt;
+      const last = rows.at(-1)!.reqCnt;
+
+      if(last > first) trend = "up";
+      else if(last < first) trend = "down";
+    }
+
+    const totalReq = rows.reduce((sum, r) => sum + r.reqCnt, 0);
+    const avgReq = Math.round(totalReq / rows.length);
+
+    return { totalReq, avgReq, trend };
+  }, [rows]);
+
+  if (err) {
+    return <div className="error">Failed to load dashboard: {err}</div>;
+  }
 
   return (
     <div className="dashboard">
@@ -25,7 +57,12 @@ export const Dashboard = () => {
         </div>
 
         <div className="section">
-          <AiInsightPanel />
+          <AiInsightPanel
+            range={range}
+            totalReq={metrics.totalReq}
+            avgReq={metrics.avgReq}
+            trend={metrics.trend}
+          />
         </div>
       </div>
 

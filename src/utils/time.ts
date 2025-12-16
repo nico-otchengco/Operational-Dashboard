@@ -1,9 +1,17 @@
 export const getStartDate = (range: "24h" | "30d" | "90d") => {
-  const d = new Date();
-  const days =
-    range === "24h" ? 1 :
-    range === "30d" ? 30 : 90;
+  const now = new Date();
 
-  d.setDate(d.getDate() - days);
-  return d.toISOString();
+  switch (range) {
+    case "24h":
+      now.setHours(now.getHours() - 24);
+      break;
+    case "30d":
+      now.setDate(now.getDate() - 30);
+      break;
+    case "90d":
+      now.setDate(now.getDate() - 90);
+      break;
+  }
+
+  return now.toISOString();
 };

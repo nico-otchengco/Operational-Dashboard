@@ -23,3 +23,14 @@ dist-ssr
 *.sln
 *.sw?
 .env
+
+# Supabase
+.supabase
+.supabase/*
+!.supabase/migrations
+!.supabase/seed.sql
+!.supabase/config.toml
+.supabase/functions
+.supabase/storage
+.supabase/.temp
+.supabase/.cache

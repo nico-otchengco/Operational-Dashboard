@@ -1,32 +1,39 @@
-import { useEffect, useMemo } from "react";
+import { useEffect } from "react";
 import { useGenAI } from "@/hooks/useGenAI";
 
-export const AiInsightPanel = () => {
-  /**
-   * Stable, senior-level prompt
-   */
-  const prompt = useMemo(
-    () => `
-You are a Senior Site Reliability Engineer reviewing system metrics.
+interface Props {
+  range: "24h" | "30d" | "90d";
+  totalReq: number;
+  avgReq: number;
+  trend: "up" | "down" | "flat";
+}
 
-Analyze the following operational data and provide:
-1. Key observations
-2. Potential risks or anomalies
-3. Concrete, actionable recommendations
+export const AiInsightPanel = ({
+  range,
+  totalReq,
+  avgReq,
+  trend,
+}: Props) => {
+  const prompt = `
+    You are a Senior Site Reliability Engineer reviewing API traffic.
 
-Metrics:
-- Total Requests: 12,000
-- Error Rate: 1.2%
-- Average Latency: 220ms
+    Time window: ${range}
 
-Rules:
-- Be concise but specific
-- Avoid generic statements
-- Respond in bullet points
-- Focus on operational improvements
-`,
-    []
-  );
+    Metrics summary:
+    - Total requests: ${totalReq}
+    - Average requests per period: ${avgReq}
+    - Traffic trend: ${trend}
+
+    Tasks:
+    1. Assess system health
+    2. Identify potential risks
+    3. Recommend concrete improvements
+
+    Rules:
+    - Be specific
+    - Avoid generic advice
+    - Use bullet points
+    `;
 
   const { gen, insight, isLoading } = useGenAI(prompt);
 
