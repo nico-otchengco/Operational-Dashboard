@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { TimeRangeFilter } from "@/components/filters/TimeRangeFilter";
 import type { TimeRange } from "@/types/time";
 import { KpiGrid } from "@/components/kpi/KpiGrid";
@@ -6,10 +6,13 @@ import { ReqChart } from "@/components/charts/ReqCharts";
 import { LogsTable } from "@/components/logs/LogsTable";
 import { AiInsightPanel } from "@/components/ai/AiInsightPanel";
 import { useReqMetrics } from "@/hooks/useReqMetrics";
+import { Analytics3DLoader } from "@/pages/Analytics3DLoader";
 
 export const Dashboard = () => {
-  const [range, setRange] = useState<TimeRange>("24h");
+  const [range, setRange] = useState<TimeRange>("7d");
   const { rows, isLd, err } = useReqMetrics(range);
+  const [ready, setReady] = useState(false);
+
   type Trend = "up" | "down" | "flat";
 
   const metrics = useMemo(() => {
@@ -17,18 +20,18 @@ export const Dashboard = () => {
       return {
         totalReq: 0,
         avgReq: 0,
-        trend: "stable" as Trend,
+        trend: "flat" as Trend,
       };
     }
 
-    let trend : Trend = "flat";
+    let trend: Trend = "flat";
 
-    if(rows.length > 1){
+    if (rows.length > 1) {
       const first = rows[0].reqCnt;
       const last = rows.at(-1)!.reqCnt;
 
-      if(last > first) trend = "up";
-      else if(last < first) trend = "down";
+      if (last > first) trend = "up";
+      else if (last < first) trend = "down";
     }
 
     const totalReq = rows.reduce((sum, r) => sum + r.reqCnt, 0);
@@ -40,6 +43,14 @@ export const Dashboard = () => {
   if (err) {
     return <div className="error">Failed to load dashboard: {err}</div>;
   }
+
+  useEffect(() => {
+    if (!isLd) {
+      setTimeout(() => setReady(true), 800);  
+    }
+  }, [isLd]);
+
+  if (!ready) return <Analytics3DLoader />;
 
   return (
     <div className="dashboard">

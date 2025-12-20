@@ -1,8 +1,8 @@
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
+import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer } from "recharts";
 import { useReqMetrics } from "@/hooks/useReqMetrics";
 
 interface ReqChartProps {
-  range: "24h" | "30d" | "90d";
+  range: "7d" | "30d" | "90d";
 }
 
 export const ReqChart = ({ range }: ReqChartProps) => {
@@ -15,7 +15,6 @@ export const ReqChart = ({ range }: ReqChartProps) => {
   return (
     <ResponsiveContainer width="100%" height="100%">
       <LineChart data={rows}>
-        <CartesianGrid strokeDasharray="3 3" />
         <XAxis dataKey="day" />
         <YAxis />
         <Tooltip />

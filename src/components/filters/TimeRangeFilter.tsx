@@ -1,6 +1,6 @@
 import type { TimeRange } from "@/types/time";
 
-const opts: TimeRange[] = ["24h", "30d", "90d"];
+const opts: TimeRange[] = ["7d", "30d", "90d"];
 
 export const TimeRangeFilter = ({
   val,

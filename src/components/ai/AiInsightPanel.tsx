@@ -2,7 +2,7 @@ import { useEffect } from "react";
 import { useGenAI } from "@/hooks/useGenAI";
 
 interface Props {
-  range: "24h" | "30d" | "90d";
+  range: "7d" | "30d" | "90d";
   totalReq: number;
   avgReq: number;
   trend: "up" | "down" | "flat";
