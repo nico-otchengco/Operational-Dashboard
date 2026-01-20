@@ -94,7 +94,7 @@ body {
 }
 
 .chart-box {
-  height: 380px;
+  height: 100%;
 }
 
 /* ===============================
@@ -102,7 +102,7 @@ body {
 ================================ */
 .ai-panel {
   background-color: #0f172a;
-  height: 100%;
+  min-height: 25.25rem;
   border-radius: 10px;
   padding: 16px;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);

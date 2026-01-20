@@ -12,6 +12,7 @@ export const Dashboard = () => {
   const [range, setRange] = useState<TimeRange>("7d");
   const { rows, isLd, err } = useReqMetrics(range);
   const [ready, setReady] = useState(false);
+  const [errorRate, setErrorRate] = useState<number>(0);
 
   type Trend = "up" | "down" | "flat";
 
@@ -50,6 +51,7 @@ export const Dashboard = () => {
     }
   }, [isLd]);
 
+
   if (!ready) return <Analytics3DLoader />;
 
   return (
@@ -59,7 +61,10 @@ export const Dashboard = () => {
       </div>
 
       <div className="section">
-        <KpiGrid range={range} />
+        <KpiGrid 
+          range={range}
+          onDataDerived={(val) => setErrorRate(val)}
+        />
       </div>
 
       <div className="main-grid">
@@ -68,12 +73,14 @@ export const Dashboard = () => {
         </div>
 
         <div className="section">
-          <AiInsightPanel
-            range={range}
-            totalReq={metrics.totalReq}
-            avgReq={metrics.avgReq}
-            trend={metrics.trend}
-          />
+            <AiInsightPanel
+              range={range}
+              totalReq={metrics.totalReq}
+              avgReq={metrics.avgReq}
+              trend={metrics.trend}
+              errPct={errorRate}
+              rows={rows}
+            />
         </div>
       </div>
 

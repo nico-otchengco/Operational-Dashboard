@@ -1,7 +1,7 @@
 export interface ReqRow {
   day: string;
   reqCnt: number;
-  errPCt?: number;
+  errPct?: number;
 }
 
 export interface ErrRow {
